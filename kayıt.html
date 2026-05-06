@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hesap Oluştur - ProBASE</title>
+    <link rel="stylesheet" href="giriş.css" />
+  </head>
+  <body>
+    <main class="giris-sayfasi">
+      <section class="giris-karti">
+        <div class="logo-alani">
+          <svg
+            class="logo-icon"
+            viewBox="0 0 120 120"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#1d4ed8" />
+                <stop offset="100%" stopColor="#2563eb" />
+              </linearGradient>
+            </defs>
+            <rect x="14" y="14" width="92" height="92" rx="24" fill="#f8fbff" />
+            <path
+              d="M36 32 H62 C70 32 76 38 76 46 V74 C76 82 70 88 62 88 H36"
+              stroke="url(#lg1)"
+              stroke-width="12"
+              stroke-linecap="round"
+              fill="none"
+            />
+            <path
+              d="M42 48 H60 C65 48 70 52 70 58 V58 C70 64 65 68 60 68 H42"
+              stroke="url(#lg1)"
+              stroke-width="12"
+              stroke-linecap="round"
+              fill="none"
+            />
+          </svg>
+          <div class="logo-yazi">
+            <h1>ProBASE</h1>
+            <p>Proje & Kaynak Yönetimi</p>
+          </div>
+        </div>
+
+        <form class="giris-formu" onsubmit="kayitYap(event)">
+          <div class="form-grup">
+            <label for="email">Email adresi:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="esteban_schiller@gmail.com"
+              required
+            />
+            <small class="form-yardim"></small>
+          </div>
+
+          <div class="form-grup">
+            <label for="kullanici-adi">Kullanıcı Adı</label>
+            <input
+              type="text"
+              id="kullanici-adi"
+              name="kullanici-adi"
+              placeholder="Kullanıcı Adı"
+              required
+            />
+          </div>
+
+          <div class="form-grup">
+            <label for="sifre">Parola</label>
+            <input
+              type="password"
+              id="sifre"
+              name="sifre"
+              placeholder="••••••"
+              minlength="8"
+              required
+            />
+          </div>
+
+          <div class="form-grup">
+            <label for="rol">Hesap Türü</label>
+            <select id="rol" name="rol" required onchange="toggleDepartman()" style="width:100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px;">
+              <option value="admin">Yönetici (Admin)</option>
+              <option value="personel">Personel</option>
+              <option value="musteri">Müşteri</option>
+            </select>
+          </div>
+
+          <div class="form-grup" id="departman-grubu" style="display: none;">
+            <label for="departman">Departman Seç (Sadece Personel)</label>
+            <select id="departman" name="departman" class="form-input">
+              <option value="Frontend">Frontend</option>
+              <option value="Backend">Backend</option>
+              <option value="Tasarım">Tasarım (UX/UI)</option>
+              <option value="Veritabanı">Veritabanı</option>
+              <option value="Proje Yönetimi">Proje Yönetimi</option>
+              <option value="Mobil Uygulama">Mobil Uygulama</option>
+              <option value="QA & Test">QA & Test</option>
+              <option value="Siber Güvenlik">Siber Güvenlik</option>
+              <option value="Veri Analizi">Veri Analizi</option>
+              <option value="DevOps">DevOps</option>
+            </select>
+          </div>
+
+          <div class="checkbox-grup">
+            <input type="checkbox" id="sartlar" name="sartlar" required />
+            <label for="sartlar">Şartlar ve koşulları kabul ediyorum</label>
+          </div>
+
+          <button type="submit" class="giris-dugmesi">Kayıt Ol</button>
+        </form>
+
+        <div class="hesap-alani">
+          <p>
+            Zaten hesabın var mı?
+            <a href="giriş.html" class="hesap-olustur">Giriş Yap</a>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      function toggleDepartman() {
+        const rol = document.getElementById("rol").value;
+        const depGrup = document.getElementById("departman-grubu");
+        if (rol === "personel") {
+          depGrup.style.display = "block";
+        } else {
+          depGrup.style.display = "none";
+        }
+      }
+
+      async function kayitYap(event) {
+        event.preventDefault();
+        
+        const btn = event.target.querySelector('button[type="submit"]');
+        btn.textContent = "Kaydediliyor...";
+        btn.disabled = true;
+
+        const email = document.getElementById("email").value;
+        const kullaniciAdi = document.getElementById("kullanici-adi").value;
+        const sifre = document.getElementById("sifre").value;
+        const rol = document.getElementById("rol").value;
+        const departman = rol === "personel" ? document.getElementById("departman").value : "";
+
+        try {
+          const response = await fetch("http://localhost:3000/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, kullaniciAdi, sifre, rol, departman })
+          });
+          
+          const data = await response.json();
+          if (response.ok) {
+            alert("Kayıt başarılı! Giriş yapabilirsiniz.");
+            window.location.href = "giriş.html";
+          } else {
+            alert("Hata: " + data.error);
+            btn.textContent = "Kayıt Ol";
+            btn.disabled = false;
+          }
+        } catch (error) {
+          console.error(error);
+          alert("Sunucuya ulaşılamadı. Backend sunucusunun çalıştığından emin olun.");
+          btn.textContent = "Kayıt Ol";
+          btn.disabled = false;
+        }
+      }
+    </script>
+  </body>
+</html>

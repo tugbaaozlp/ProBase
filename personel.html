@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personel Paneli - ProBASE</title>
+  <link rel="stylesheet" href="personel.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --p-primary: #3b82f6;
+      --p-accent: #f97316;
+      --p-bg: #f8fafc;
+      --p-sidebar: #0f172a;
+      --font-main: 'Outfit', sans-serif;
+    }
+    
+    * { box-sizing: border-box; font-family: var(--font-main); }
+    body { background: var(--p-bg); margin: 0; height: 100vh; overflow: hidden; }
+
+    .layout { display: flex; height: 100vh; width: 100vw; }
+    
+    /* LEFT SIDEBAR */
+    .sidebar { width: 260px; background: var(--p-sidebar); color: white; display: flex; flex-direction: column; padding: 30px 20px; transition: 0.3s; }
+    .sidebar-logo { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
+    .sidebar-logo svg { width: 35px; height: 35px; }
+    .sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+    .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 12px; text-align: left; cursor: pointer; font-weight: 500; transition: 0.3s; }
+    .nav-btn.active { background: #1e293b; color: white; }
+    .nav-btn:hover { background: #1e293b; color: white; }
+
+    /* TOP BAR */
+    .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .top-bar { 
+      height: 70px; 
+      background: white; 
+      border-bottom: 1px solid #e2e8f0; 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      padding: 0 30px;
+      z-index: 20;
+    }
+    .top-user { display: flex; align-items: center; gap: 12px; }
+    .top-user img { width: 40px; height: 40px; border-radius: 12px; border: 2px solid #f1f5f9; }
+    .top-user-text h4 { margin: 0; font-size: 14px; font-weight: 700; color: #1e293b; }
+    .top-user-text span { font-size: 11px; color: #64748b; }
+
+    .top-actions { display: flex; align-items: center; gap: 15px; }
+    .top-notif-btn { width: 40px; height: 40px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: 0.2s; }
+    .top-notif-btn:hover { background: #eff6ff; border-color: var(--p-primary); }
+    .notif-badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; width: 18px; height: 18px; border-radius: 50%; border: 3px solid white; font-size: 10px; font-weight: 800; display: none; align-items: center; justify-content: center; }
+
+    /* CONTENT */
+    .content-area { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 25px; }
+    .card { background: white; border-radius: 20px; border: 1px solid #e2e8f0; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+
+    /* RIGHT CHAT SIDEBAR */
+    .chat-sidebar {
+      width: 380px;
+      background: white;
+      border-left: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      transition: 0.3s;
+    }
+    .chat-header { padding: 20px 25px; border-bottom: 1px solid #e2e8f0; font-size: 16px; font-weight: 800; color: #0f172a; }
+    
+    .chat-tabs-container { padding: 15px; background: #fafafa; border-bottom: 1px solid #f1f5f9; overflow-x: auto; scrollbar-width: none; }
+    .chat-tabs-container::-webkit-scrollbar { display: none; }
+    .chat-tabs { display: flex; gap: 15px; }
+    
+    .chat-tab { flex-shrink: 0; width: 60px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s; }
+    .tab-img { width: 48px; height: 48px; border-radius: 15px; border: 2px solid transparent; transition: 0.2s; position: relative; overflow: hidden; background: #f1f5f9; }
+    .chat-tab.active .tab-img { border-color: var(--p-primary); transform: scale(1.1); box-shadow: 0 4px 10px rgba(59,130,246,0.2); }
+    .tab-label { font-size: 10px; font-weight: 700; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+    .tab-notif-dot { position: absolute; top: -2px; right: -2px; width: 12px; height: 12px; background: #ef4444; border-radius: 50%; border: 2px solid white; display: none; }
+
+    .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; background: #fbfcfe; }
+    .msg-group { display: flex; flex-direction: column; max-width: 85%; }
+    .msg-group.self { align-self: flex-end; }
+    .msg-group.other { align-self: flex-start; }
+    .msg-bubble { padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.5; }
+    .self .msg-bubble { background: var(--p-primary); color: white; border-bottom-right-radius: 4px; }
+    .other .msg-bubble { background: white; color: #1e293b; border-bottom-left-radius: 4px; border: 1px solid #f1f5f9; }
+    .msg-info { font-size: 10px; font-weight: 700; color: #94a3b8; margin-bottom: 3px; }
+    .self .msg-info { text-align: right; }
+
+    .chat-input-area { padding: 20px; background: white; border-top: 1px solid #f1f5f9; }
+    .chat-input-box { display: flex; background: #f1f5f9; border-radius: 15px; padding: 10px 15px; align-items: center; gap: 10px; }
+    .chat-input-box input { flex: 1; border: none; background: transparent; outline: none; font-size: 14px; color: #1e293b; }
+    .chat-send-btn { background: var(--p-primary); color: white; border: none; width: 35px; height: 35px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+
+    /* NOTIFICATION PANEL */
+    .notif-dropdown { position: absolute; top: 60px; right: 30px; width: 320px; background: white; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.1); display: none; z-index: 100; overflow: hidden; }
+
+    /* RESPONSIVE */
+    @media (max-width: 1200px) {
+      .chat-sidebar { width: 320px; }
+      .sidebar { width: 80px; padding: 20px 10px; }
+      .sidebar-logo h2, .sidebar-nav .nav-btn, .sidebar-logo p { display: none; }
+      .sidebar-logo { justify-content: center; margin-bottom: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="toast" style="position:fixed; bottom:20px; left:20px; background:#0f172a; color:white; padding:12px 20px; border-radius:12px; font-size:13px; display:none; z-index:1000;"></div>
+  
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <svg viewBox="0 0 120 120"><defs><linearGradient id="g3"><stop offset="0%" stopColor="#60a5fa"/><stop offset="100%" stopColor="#3b82f6"/></linearGradient></defs><rect x="14" y="14" width="92" height="92" rx="24" fill="none"/><path d="M36 32 H62 C70 32 76 38 76 46 V74 C76 82 70 88 62 88 H36" stroke="url(#g3)" stroke-width="12" stroke-linecap="round" fill="none"/><path d="M42 48 H60 C65 48 70 52 70 58 V58 C70 64 65 68 60 68 H42" stroke="url(#g3)" stroke-width="12" stroke-linecap="round" fill="none"/></svg>
+        <h2 style="margin:0; font-size:22px; font-weight:900;">ProBASE</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-btn active">Görevlerim</button>
+        <button class="nav-btn" onclick="location.href='personel-projeler.html'">Projelerim</button>
+      </nav>
+      <button class="nav-btn" style="color:#ef4444; margin-top:auto;" onclick="cikisYap()">Çıkış Yap</button>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="top-bar">
+        <div class="top-user">
+          <img id="userAvatar" src="">
+          <div class="top-user-text">
+            <h4 id="userNameDisplay">...</h4>
+            <span>Hoş Geldin, Bugün Neler Yapıyoruz?</span>
+          </div>
+        </div>
+        <div class="top-actions">
+          <div class="top-notif-btn" onclick="toggleNotifPanel()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <div class="notif-badge" id="notifBadge"></div>
+          </div>
+          <div class="notif-dropdown" id="notifDropdown">
+            <div style="padding:15px 20px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:800; font-size:14px;">Bildirimler</span>
+              <button onclick="markAllAsRead()" style="background:none; border:none; color:var(--p-primary); font-size:11px; font-weight:700; cursor:pointer;">Hepsini Oku</button>
+            </div>
+            <div class="notif-list" id="notifList"></div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="margin:0; font-size:20px; font-weight:800;">Aktif Görevlerim</h2>
+            <div style="background:#eff6ff; padding:8px 15px; border-radius:10px; color:var(--p-primary); font-weight:800; font-size:14px;" id="taskScore">0/0</div>
+          </div>
+          <div id="taskList" style="display:flex; flex-direction:column; gap:12px;"></div>
+        </div>
+      </main>
+    </div>
+
+    <aside class="chat-sidebar">
+      <div class="chat-header">Hızlı Sohbet 💬</div>
+      <div class="chat-tabs-container">
+        <div class="chat-tabs" id="chatTabs">
+          <div class="chat-tab active" onclick="selectActiveChat('group')" id="tab-group">
+            <div class="tab-img" style="display:flex; align-items:center; justify-content:center; background:#8b5cf6; color:white;">🤖</div>
+            <div class="tab-label">Asistan</div>
+          </div>
+          <div id="dynamicPersonnelTabs" style="display:flex; gap:15px;"></div>
+        </div>
+      </div>
+      <div class="chat-messages" id="chatMsgs"></div>
+      <div class="chat-input-area">
+        <div class="chat-input-box">
+          <input type="text" id="chatInput" placeholder="Mesajınız..." onkeypress="if(event.key==='Enter')sendChatMessage()">
+          <button class="chat-send-btn" onclick="sendChatMessage()">➤</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    let activeChatId = "group";
+    let personnelList = [];
+    let lastMessageId = 0;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const me = localStorage.getItem("userName");
+      if(!me) { location.href="giriş.html"; return; }
+      document.getElementById("userNameDisplay").textContent = me;
+      document.getElementById("userAvatar").src = `https://api.dicebear.com/7.x/adventurer/svg?seed=${me.replace(/\s+/g,"")}&backgroundColor=ffdfbf`;
+      init();
+      setInterval(syncData, 3000);
+    });
+
+    async function init(){ await loadPersonnel(); loadTasks(); loadNotifications(); renderMessages(true); }
+    async function syncData(){ renderMessages(false); loadNotifications(); }
+
+    async function loadTasks(){
+        const me = localStorage.getItem("userName");
+        const dept = localStorage.getItem("userDept") || "";
+        const r = await fetch(`http://localhost:3000/api/tasks?user=${encodeURIComponent(me)}`);
+        const tasks = await r.json();
+
+        const adminTasks = tasks.filter(t => !t.departman || t.departman === 'Genel' || t.departman !== dept);
+        const deptTasks  = tasks.filter(t => t.departman && t.departman === dept);
+
+        const list = document.getElementById("taskList");
+        list.innerHTML = "";
+
+        const renderSection = (title, icon, items, color) => {
+            if(items.length === 0) return;
+            const section = document.createElement("div");
+            section.innerHTML = `<div style="font-size:13px; font-weight:800; color:${color}; text-transform:uppercase; letter-spacing:.05em; padding:5px 0 10px; display:flex; align-items:center; gap:8px;">${icon} ${title}</div>`;
+            items.forEach(t => {
+                const row = document.createElement("div");
+                row.style.cssText = `display:flex; align-items:center; gap:15px; padding:14px 18px; background:${t.progress===100?'#f0fdf4':'#f8fafc'}; border-radius:14px; border:1px solid ${t.progress===100?'#bbf7d0':'#f1f5f9'}; transition:.2s;`;
+                row.innerHTML = `
+                  <input type="checkbox" id="task-${t.id}" ${t.progress===100?'checked':''} onchange="updateProgress(${t.id}, this.checked)" style="width:18px;height:18px;cursor:pointer;accent-color:#10b981;">
+                  <div style="flex:1;">
+                    <div style="font-weight:700; font-size:14px; color:${t.progress===100?'#16a34a':'#1e293b'}; text-decoration:${t.progress===100?'line-through':'none'};">${t.baslik}</div>
+                    <div style="font-size:12px; color:#94a3b8; margin-top:2px;">${t.detay || ''}</div>
+                  </div>
+                  <span style="padding:4px 10px; border-radius:8px; font-size:11px; font-weight:800; background:${t.progress===100?'#dcfce7':'#fef3c7'}; color:${t.progress===100?'#16a34a':'#d97706'};">${t.progress===100?'TAMAMLANDI':'DEVAM EDİYOR'}</span>`;
+                section.appendChild(row);
+            });
+            list.appendChild(section);
+        };
+
+        renderSection("Admin Tarafından Atanan", "📌", adminTasks, "#2563eb");
+        renderSection(`${dept} Departman Görevleri`, "🏢", deptTasks, "#7c3aed");
+
+        if(tasks.length === 0) list.innerHTML = `<div style="text-align:center; padding:40px; color:#94a3b8; font-weight:600;">Henüz görev atanmadı.</div>`;
+        document.getElementById("taskScore").textContent = `${tasks.filter(t=>t.progress===100).length}/${tasks.length}`;
+    }
+
+    async function updateProgress(id, checked){
+        await fetch(`http://localhost:3000/api/tasks/${id}`, {
+            method:'PUT',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ progress: checked ? 100 : 0 })
+        });
+        loadTasks();
+    }
+
+    async function loadPersonnel(){
+        const r = await fetch('/api/personnel');
+        personnelList = await r.json();
+        const container = document.getElementById("dynamicPersonnelTabs");
+        container.innerHTML = "";
+        const me = localStorage.getItem("userName");
+        personnelList.forEach(p => {
+            if(p.kullaniciAdi === me) return;
+            const seed = p.kullaniciAdi.replace(/\s+/g,"");
+            const div = document.createElement("div");
+            div.className = `chat-tab ${activeChatId === p.kullaniciAdi ? 'active' : ''}`;
+            div.onclick = () => selectActiveChat(p.kullaniciAdi);
+            div.innerHTML = `<div class="tab-img"><img src="https://api.dicebear.com/7.x/adventurer/svg?seed=${seed}&backgroundColor=ffd5dc" style="width:100%"><div class="tab-notif-dot"></div></div><div class="tab-label">${p.kullaniciAdi.split(' ')[0]}</div>`;
+            container.appendChild(div);
+        });
+    }
+
+    function selectActiveChat(id){
+        activeChatId = id;
+        document.getElementById("tab-group").classList.toggle("active", id === 'group');
+        loadPersonnel();
+        renderMessages(true);
+    }
+
+    async function renderMessages(forceScroll){
+        const me = localStorage.getItem("userName");
+        const body = document.getElementById("chatMsgs");
+        try {
+            const receiverParam = activeChatId === 'group' ? 'group' : encodeURIComponent(activeChatId);
+            const r = await fetch(`/api/messages?receiver=${receiverParam}&sender=${encodeURIComponent(me)}`);
+            const msgs = await r.json();
+            body.innerHTML = "";
+            msgs.forEach(m => {
+                const self = m.sender === me;
+                const div = document.createElement("div");
+                div.className = `msg-group ${self?'self':'other'}`;
+                div.innerHTML = `<div class="msg-info">${m.sender} ${m.time}</div><div class="msg-bubble">${m.text}</div>`;
+                body.appendChild(div);
+            });
+            if(forceScroll) body.scrollTop = body.scrollHeight;
+        } catch(e){}
+    }
+
+    async function sendChatMessage(){
+        const input = document.getElementById("chatInput");
+        const text = input.value.trim(); if(!text) return;
+        const me = localStorage.getItem("userName");
+        await fetch('/api/messages', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ sender:me, receiver:activeChatId, text:text, time:new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) }) });
+        input.value = ""; renderMessages(true);
+    }
+
+    async function loadNotifications(){
+        const me = localStorage.getItem("userName");
+        const r = await fetch(`/api/notifications?user=${encodeURIComponent(me)}`);
+        const data = await r.json();
+        const badge = document.getElementById("notifBadge");
+        const list = document.getElementById("notifList");
+        let unread = data.filter(n => !n.is_read).length;
+        badge.textContent = unread;
+        badge.style.display = unread > 0 ? 'flex' : 'none';
+        list.innerHTML = data.map(n => `<div class="notif-item ${n.is_read?'':'unread'}"><div style="font-weight:700; font-size:13px;">${n.title}</div><div style="font-size:12px; color:#64748b;">${n.message}</div></div>`).join('');
+    }
+
+    function toggleNotifPanel(){ const p = document.getElementById("notifDropdown"); p.style.display = p.style.display === 'block' ? 'none' : 'block'; }
+    async function markAllAsRead(){ const me = localStorage.getItem("userName"); await fetch('/api/notifications/read', { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ user: me }) }); loadNotifications(); }
+    function cikisYap(){ localStorage.clear(); location.href="giriş.html"; }
+  </script>
+</body>
+</html>

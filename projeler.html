@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeler - ProBASE Admin</title>
+    <link rel="stylesheet" href="anasayfa.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --admin-primary: #2563eb;
+            --admin-bg: #f8fafc;
+            --font-main: 'Outfit', sans-serif;
+        }
+        body { font-family: var(--font-main); background: var(--admin-bg); margin: 0; }
+        .container { display: flex; height: 100vh; }
+        
+        /* UNIFIED SIDEBAR */
+        .sidebar { width: 260px; background: #0f172a; color: white; padding: 30px 20px; display: flex; flex-direction: column; transition: 0.3s; }
+        .sidebar-logo { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
+        .sidebar-logo svg { width: 35px; height: 35px; }
+        .sidebar-logo h2 { font-size: 24px; font-weight: 900; margin: 0; color: white; }
+        
+        .sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 12px; text-align: left; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 14px; width: 100%; }
+        .nav-btn.active { background: #1e293b; color: white; }
+        .nav-btn:hover { background: #1e293b; color: white; }
+        
+        .cikis-btn { background: #fee2e2; color: #ef4444; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: auto; transition: 0.2s; }
+        .cikis-btn:hover { background: #fecaca; }
+
+        .dashboard { flex: 1; padding: 40px; overflow-y: auto; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .page-header h1 { font-size: 32px; font-weight: 800; color: #0f172a; margin: 0; }
+
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        .project-card { 
+            background: white; 
+            border-radius: 24px; 
+            padding: 30px; 
+            border: 1px solid #e2e8f0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            text-align: center; 
+            gap: 20px; 
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+        .project-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); border-color: var(--admin-primary); }
+
+        .circular-progress { 
+            width: 110px; height: 110px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; 
+            background: conic-gradient(var(--admin-primary) 0deg, #f1f5f9 0deg);
+        }
+        .circular-progress::before { content: ""; position: absolute; width: 85px; height: 85px; background: white; border-radius: 50%; }
+        .progress-value { position: relative; font-weight: 900; font-size: 20px; color: #1e293b; }
+
+        .btn-detail { 
+            background: var(--admin-primary); 
+            color: white; 
+            border: none; 
+            padding: 14px 25px; 
+            border-radius: 14px; 
+            font-weight: 800; 
+            width: 100%; 
+            cursor: pointer; 
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .btn-detail:hover { background: #1d4ed8; transform: scale(1.02); }
+
+        .p-info { width: 100%; display: flex; flex-direction: column; gap: 5px; }
+        .p-info h3 { margin: 0; font-size: 20px; font-weight: 800; color: #0f172a; }
+        .p-info p { margin: 0; font-size: 13px; color: #64748b; font-weight: 500; }
+        
+        .budget-tag { font-weight: 800; color: #334155; font-size: 14px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <svg viewBox="0 0 120 120"><defs><linearGradient id="g8"><stop offset="0%" stopColor="#60a5fa"/><stop offset="100%" stopColor="#3b82f6"/></linearGradient></defs><rect x="14" y="14" width="92" height="92" rx="24" fill="none"/><path d="M36 32 H62 C70 32 76 38 76 46 V74 C76 82 70 88 62 88 H36" stroke="url(#g8)" stroke-width="12" stroke-linecap="round" fill="none"/><path d="M42 48 H60 C65 48 70 52 70 58 V58 C70 64 65 68 60 68 H42" stroke="url(#g8)" stroke-width="12" stroke-linecap="round" fill="none"/></svg>
+                <h2>ProBASE</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-btn" onclick="location.href='anasayfa.html'">🏠 DASHBOARD</button>
+                <button class="nav-btn" onclick="location.href='musteriler.html'">👥 MÜŞTERİLER</button>
+                <button class="nav-btn active" onclick="location.href='projeler.html'">📊 PROJELER</button>
+                <button class="nav-btn" onclick="location.href='sohbet.html'">💬 SOHBET</button>
+            </nav>
+            <button class="cikis-btn" onclick="localStorage.clear(); location.href='giriş.html'">Çıkış Yap</button>
+        </aside>
+
+        <main class="dashboard">
+            <div class="page-header">
+                <h1>Projelerin Durumu</h1>
+                <button onclick="location.href='yeni-proje.html'" style="background:var(--admin-primary); color:white; border:none; padding:15px 25px; border-radius:14px; font-weight:800; cursor:pointer; transition:0.3s; box-shadow: 0 4px 12px rgba(37,99,235,0.2);">+ Yeni Proje Oluştur</button>
+            </div>
+            <div class="projects-grid" id="projectsGrid"></div>
+        </main>
+    </div>
+
+    <script>
+        async function loadProjects() {
+            const grid = document.getElementById("projectsGrid");
+            grid.innerHTML = "<p>Veriler yükleniyor...</p>";
+            try {
+                const r = await fetch('/api/projects');
+                const projects = await r.json();
+                grid.innerHTML = "";
+                
+                projects.forEach(p => {
+                    const card = document.createElement("div");
+                    card.className = "project-card";
+                    const prog = p.ilerleme || 0;
+                    const deg = prog * 3.6;
+                    
+                    card.innerHTML = `
+                        <div class="p-info">
+                            <h3>${p.ad}</h3>
+                            <p>Müşteri: ${p.musteri}</p>
+                            <p>Kategori: ${p.kategori || 'Genel'}</p>
+                        </div>
+                        <div class="circular-progress" style="background: conic-gradient(var(--admin-primary) ${deg}deg, #f1f5f9 0deg);">
+                            <span class="progress-value">${prog}%</span>
+                        </div>
+                        <div class="budget-tag">Bütçe: ${p.butce} ₺</div>
+                        <button class="btn-detail" onclick="goDetail(${p.id}, '${p.ad}', '${p.butce}', ${prog}, '#2563eb', '${p.bitis}', '${p.kategori}')">Proje Detayı</button>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch(e) { grid.innerHTML = "<p>Veriler çekilemedi.</p>"; }
+        }
+
+        function goDetail(id, ad, butce, yuzde, renk, bitis, kategori) {
+            localStorage.setItem("aktifProje", JSON.stringify({ id, ad, butce, ilerleme: yuzde, renk, bitis, kategori }));
+            location.href = "proje-detay.html";
+        }
+
+        document.addEventListener("DOMContentLoaded", loadProjects);
+    </script>
+</body>
+</html>

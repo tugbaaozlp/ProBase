@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sohbet - ProBASE Admin</title>
+    <link rel="stylesheet" href="anasayfa.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --admin-primary: #2563eb;
+            --admin-bg: #f8fafc;
+            --font-main: 'Outfit', sans-serif;
+        }
+        body { font-family: var(--font-main); background: var(--admin-bg); margin: 0; overflow: hidden; }
+        .container { display: flex; height: 100vh; width: 100vw; }
+        
+        /* UNIFIED SIDEBAR */
+        .sidebar { width: 260px; background: #0f172a; color: white; padding: 30px 20px; display: flex; flex-direction: column; transition: 0.3s; flex-shrink: 0; }
+        .sidebar-logo { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
+        .sidebar-logo svg { width: 35px; height: 35px; }
+        .sidebar-logo h2 { font-size: 24px; font-weight: 900; margin: 0; color: white; }
+        
+        .sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 12px; text-align: left; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 14px; width: 100%; }
+        .nav-btn.active { background: #1e293b; color: white; }
+        .nav-btn:hover { background: #1e293b; color: white; }
+        
+        .cikis-btn { background: #fee2e2; color: #ef4444; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: auto; }
+
+        /* CHAT LAYOUT */
+        .chat-main-container { flex: 1; display: flex; background: white; overflow: hidden; }
+        
+        .chat-list-panel { width: 350px; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; }
+        .chat-list-header { padding: 25px; border-bottom: 1px solid #f1f5f9; }
+        .chat-list-header h2 { margin: 0 0 15px 0; font-size: 22px; font-weight: 800; color: #0f172a; }
+        .search-box { background: #f1f5f9; border-radius: 12px; padding: 10px 15px; display: flex; align-items: center; gap: 10px; }
+        .search-box input { border: none; background: transparent; outline: none; font-size: 14px; width: 100%; }
+        
+        .chat-list { flex: 1; overflow-y: auto; padding: 10px; list-style: none; margin: 0; }
+        .chat-item { padding: 12px 15px; border-radius: 15px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; margin-bottom: 5px; position: relative; }
+        .chat-item:hover { background: #f8fafc; }
+        .chat-item.active { background: #eff6ff; }
+        .chat-item .avatar { width: 45px; height: 45px; border-radius: 12px; background: #e2e8f0; flex-shrink: 0; overflow: hidden; }
+        .chat-item .info { flex: 1; min-width: 0; }
+        .chat-item .name { font-weight: 700; color: #1e293b; font-size: 14px; display: block; }
+        .chat-item .role { font-size: 11px; color: #64748b; font-weight: 600; }
+        .notif-dot { position: absolute; top: 15px; right: 15px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; display: none; }
+
+        .chat-content { flex: 1; display: flex; flex-direction: column; background: #fbfcfe; }
+        .chat-header { padding: 20px 30px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 15px; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 15px; }
+        .msg-row { display: flex; flex-direction: column; max-width: 75%; }
+        .msg-bubble { padding: 12px 18px; border-radius: 18px; font-size: 14px; line-height: 1.5; }
+        .msg-self { align-self: flex-end; }
+        .msg-self .msg-bubble { background: var(--admin-primary); color: white; border-bottom-right-radius: 4px; }
+        .msg-other { align-self: flex-start; }
+        .msg-other .msg-bubble { background: white; color: #1e293b; border-bottom-left-radius: 4px; border: 1px solid #e2e8f0; }
+        .msg-time { font-size: 10px; color: #94a3b8; margin-top: 5px; }
+
+        .chat-input-area { padding: 25px 30px; background: white; border-top: 1px solid #e2e8f0; }
+        .input-box { display: flex; background: #f1f5f9; border-radius: 30px; padding: 12px 25px; align-items: center; gap: 15px; }
+        .input-box input { flex: 1; border: none; background: transparent; outline: none; font-size: 15px; }
+        .btn-send { background: var(--admin-primary); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
+
+        #toast { position: fixed; bottom: 30px; right: 30px; background: #1e293b; color: white; padding: 16px 24px; border-radius: 12px; display: none; z-index: 1000; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <div id="toast"></div>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <svg viewBox="0 0 120 120"><defs><linearGradient id="g12"><stop offset="0%" stopColor="#60a5fa"/><stop offset="100%" stopColor="#3b82f6"/></linearGradient></defs><rect x="14" y="14" width="92" height="92" rx="24" fill="none"/><path d="M36 32 H62 C70 32 76 38 76 46 V74 C76 82 70 88 62 88 H36" stroke="url(#g12)" stroke-width="12" stroke-linecap="round" fill="none"/><path d="M42 48 H60 C65 48 70 52 70 58 V58 C70 64 65 68 60 68 H42" stroke="url(#g12)" stroke-width="12" stroke-linecap="round" fill="none"/></svg>
+                <h2>ProBASE</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-btn" onclick="location.href='anasayfa.html'">🏠 DASHBOARD</button>
+                <button class="nav-btn" onclick="location.href='musteriler.html'">👥 MÜŞTERİLER</button>
+                <button class="nav-btn" onclick="location.href='projeler.html'">📊 PROJELER</button>
+                <button class="nav-btn active" onclick="location.href='sohbet.html'">💬 SOHBET</button>
+            </nav>
+            <button class="cikis-btn" onclick="localStorage.clear(); location.href='giriş.html'">Çıkış Yap</button>
+        </aside>
+
+        <main class="chat-main-container">
+            <div class="chat-list-panel">
+                <div class="chat-list-header">
+                    <h2>Sohbetler</h2>
+                    <div class="search-box">🔍 <input type="text" id="userSearch" placeholder="Kişi ara..." oninput="filterUsers()"></div>
+                </div>
+                <ul class="chat-list" id="userList"></ul>
+            </div>
+
+            <div class="chat-content">
+                <div class="chat-header">
+                    <div id="activeAvatar" style="width:45px; height:45px; border-radius:12px; background:#e2e8f0; display:flex; align-items:center; justify-content:center; overflow:hidden;"></div>
+                    <div>
+                        <h3 id="activeName" style="margin:0; font-size:18px; font-weight:800; color:#0f172a;">Sohbet Seçin</h3>
+                        <span style="font-size:12px; color:#10b981;">● Aktif</span>
+                    </div>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div style="text-align:center; color:#94a3b8; margin-top:100px;">Mesajlaşmak için bir kişi seçin.</div>
+                </div>
+                <div class="chat-input-area">
+                    <div class="input-box">
+                        <input type="text" id="chatInput" placeholder="Mesajınızı yazın..." onkeypress="if(event.key==='Enter')sendMsg()">
+                        <button class="btn-send" onclick="sendMsg()">➤</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let users = [];
+        let activeChat = null;
+        let lastMsgId = 0;
+        const me = "Admin User";
+
+        async function loadUsers() {
+            const r = await fetch('/api/personnel');
+            users = await r.json();
+            renderUsers(users);
+        }
+
+        function renderUsers(list) {
+            const container = document.getElementById("userList");
+            container.innerHTML = "";
+            list.filter(u => u.kullaniciAdi !== me).forEach(u => {
+                const isMusteri = u.rol === 'musteri';
+                const seed = u.kullaniciAdi.replace(/\s+/g,"");
+                const li = document.createElement("li");
+                li.className = `chat-item ${activeChat === u.kullaniciAdi ? 'active' : ''}`;
+                li.id = `chat-${u.kullaniciAdi}`;
+                li.onclick = () => selectChat(u.kullaniciAdi);
+                li.innerHTML = `
+                    <div class="avatar"><img src="https://api.dicebear.com/7.x/adventurer/svg?seed=${seed}" style="width:100%"></div>
+                    <div class="info">
+                        <span class="name">${u.kullaniciAdi}</span>
+                        <span class="role">${isMusteri ? '<span style="color:var(--admin-primary); font-weight:800;">MÜŞTERİ</span>' : (u.departman || 'Personel')}</span>
+                    </div>
+                    <div class="notif-dot" id="dot-${u.kullaniciAdi}"></div>
+                `;
+                container.appendChild(li);
+            });
+        }
+
+        function filterUsers() {
+            const q = document.getElementById("userSearch").value.toLowerCase();
+            renderUsers(users.filter(u => u.kullaniciAdi.toLowerCase().includes(q)));
+        }
+
+        function selectChat(name) {
+            activeChat = name;
+            document.getElementById("activeName").textContent = name;
+            const seed = name.replace(/\s+/g,"");
+            document.getElementById("activeAvatar").innerHTML = `<img src="https://api.dicebear.com/7.x/adventurer/svg?seed=${seed}" style="width:100%">`;
+            document.getElementById(`dot-${name}`).style.display = "none";
+            renderUsers(users);
+            renderMessages(true);
+        }
+
+        async function renderMessages(force) {
+            if(!activeChat) return;
+            const r = await fetch(`/api/messages?receiver=${encodeURIComponent(activeChat)}&sender=${encodeURIComponent(me)}`);
+            const msgs = await r.json();
+            
+            // Notification logic
+            if(msgs.length > 0) {
+                const last = msgs[msgs.length-1];
+                if(last.id > lastMsgId) {
+                    if(last.receiver === me && last.sender !== activeChat) {
+                        showToast(`${last.sender} mesaj gönderdi.`);
+                        document.getElementById(`dot-${last.sender}`).style.display = "block";
+                    }
+                    lastMsgId = last.id;
+                }
+            }
+
+            const box = document.getElementById("chatMessages");
+            box.innerHTML = msgs.map(m => {
+                const isSelf = m.sender === me;
+                return `<div class="msg-row ${isSelf?'msg-self':'msg-other'}">
+                    <div class="msg-bubble">${m.text}</div>
+                    <div class="msg-time">${m.time}</div>
+                </div>`;
+            }).join('');
+            if(force) box.scrollTop = box.scrollHeight;
+        }
+
+        async function sendMsg() {
+            const i = document.getElementById("chatInput");
+            const t = i.value.trim(); if(!t || !activeChat) return;
+            await fetch('/api/messages', {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ sender:me, receiver:activeChat, text:t, time:new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) })
+            });
+            i.value = ""; renderMessages(true);
+        }
+
+        function showToast(txt) {
+            const t = document.getElementById("toast");
+            t.textContent = txt; t.style.display = "block";
+            setTimeout(() => t.style.display = "none", 4000);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadUsers();
+            setInterval(() => renderMessages(false), 3000);
+        });
+    </script>
+</body>
+</html>

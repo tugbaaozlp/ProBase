@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ProBASE - Anasayfa</title>
+    <link rel="stylesheet" href="giriş.css" />
+    <style>
+      .landing-karti {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 400px;
+        min-height: 500px;
+        padding: 40px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+      }
+      .landing-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 40px;
+      }
+      .landing-logo-yazi h1 {
+        margin: 0;
+        font-size: 28px;
+        color: #0f172a;
+        font-weight: 700;
+        line-height: 1;
+      }
+      .landing-logo-yazi p {
+        margin: 4px 0 0;
+        color: #64748b;
+        font-size: 11px;
+      }
+      .btn-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+        max-width: 200px;
+      }
+      .btn-landing {
+        display: inline-block;
+        width: 100%;
+        padding: 12px 0;
+        text-align: center;
+        background: #4f87ff;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: background 0.2s;
+        border: none;
+        cursor: pointer;
+      }
+      .btn-landing:hover {
+        background: #3b76ff;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="giris-sayfasi">
+      <div class="landing-karti">
+        <div class="landing-logo">
+          <svg class="logo-icon" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" style="width: 50px; height: 50px;">
+            <defs>
+              <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#1d4ed8" />
+                <stop offset="100%" stopColor="#2563eb" />
+              </linearGradient>
+            </defs>
+            <rect x="14" y="14" width="92" height="92" rx="24" fill="#f8fbff" />
+            <path d="M36 32 H62 C70 32 76 38 76 46 V74 C76 82 70 88 62 88 H36" stroke="url(#lg1)" stroke-width="12" stroke-linecap="round" fill="none" />
+            <path d="M42 48 H60 C65 48 70 52 70 58 V58 C70 64 65 68 60 68 H42" stroke="url(#lg1)" stroke-width="12" stroke-linecap="round" fill="none" />
+          </svg>
+          <div class="landing-logo-yazi">
+            <h1>ProBASE</h1>
+            <p>Proje & Kaynak Yönetimi</p>
+          </div>
+        </div>
+        
+        <div class="btn-container">
+          <a href="giriş.html" class="btn-landing">GİRİŞ YAP</a>
+          <a href="kayıt.html" class="btn-landing">KAYIT OL</a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

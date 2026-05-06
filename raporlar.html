@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Raporlar - ProBASE</title>
+    <link rel="stylesheet" href="anasayfa.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sidebar-logo">
+          <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#60a5fa" />
+                <stop offset="100%" stopColor="#3b82f6" />
+              </linearGradient>
+            </defs>
+            <rect x="14" y="14" width="92" height="92" rx="24" fill="none" />
+            <path d="M36 32 H62 C70 32 76 38 76 46 V74 C76 82 70 88 62 88 H36" stroke="url(#lg1)" stroke-width="12" stroke-linecap="round" fill="none" />
+            <path d="M42 48 H60 C65 48 70 52 70 58 V58 C70 64 65 68 60 68 H42" stroke="url(#lg1)" stroke-width="12" stroke-linecap="round" fill="none" />
+          </svg>
+          <div class="logo-yazi">
+            <h3>ProBASE</h3>
+            <p>Proje & Kaynak</p>
+          </div>
+        </div>
+
+        <nav class="sidebar-menu">
+          <button class="menu-btn" onclick="goToPage('musteriler.html')">👥 MÜŞTERİLER</button>
+          <button class="menu-btn" onclick="goToPage('projeler.html')">📊 PROJELER</button>
+        </nav>
+
+        <button class="cikis-btn" onclick="cikisYap()">Çıkış Yap</button>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="dashboard" style="background: #e2e8f0;">
+        
+        <div class="page-header" style="background: white; padding: 24px; border-radius: 8px; margin-bottom: 24px;">
+          <h1>RAPORLAR</h1>
+        </div>
+
+        <div class="reports-grid">
+          
+          <!-- Bütçe Dağılımı ve Harcamalar -->
+          <div class="report-card wide" style="grid-column: span 1;">
+            <div class="report-title">Bütçe Dağılımı ve Harcamalar</div>
+            <h2 id="dynamic-butce" style="font-size: 24px; color: #0f172a; margin-bottom: 24px;">0 TL</h2>
+            
+            <div class="pie-chart-container">
+              <div class="pie-chart" id="dynamic-pie-chart" style="background: conic-gradient(#e2e8f0 0deg 360deg);"></div>
+              <div class="pie-legend" id="dynamic-pie-legend">
+                <!-- JS ile doldurulacak -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Alt Görev İlerlemeleri -->
+          <div class="report-card">
+            <div class="report-title">Alt Görev İlerlemeleri</div>
+            <div class="mini-progress-grid" id="dynamic-mini-progress">
+              <!-- JS ile doldurulacak -->
+            </div>
+          </div>
+
+          <!-- Ekip Verimliliği -->
+          <div class="report-card">
+            <div class="report-title">Ekip Verimliliği</div>
+            <div class="nested-rings-container">
+              <div class="rings-legend" id="dynamic-rings-legend" style="text-align: right;">
+                <!-- JS ile doldurulacak -->
+              </div>
+              <div class="nested-rings">
+                <div class="ring ring-1"></div>
+                <div class="ring ring-2"></div>
+                <div class="ring ring-3"></div>
+                <div class="ring ring-4"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+
+    <script>
+      function goToPage(page) {
+        window.location.href = page;
+      }
+
+      function cikisYap() {
+        localStorage.removeItem("dashboardData");
+        window.location.href = "giriş.html";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const dataStr = localStorage.getItem("aktifProje");
+        if (dataStr) {
+          const data = JSON.parse(dataStr);
+          
+          // Başlığı Güncelle
+          const headerElement = document.querySelector(".page-header h1");
+          if(headerElement) {
+            headerElement.textContent = data.ad.toUpperCase() + " PROJESİ RAPOR ANALİZİ";
+          }
+          
+          // 1. Bütçe Dağılımı
+          let rawButce = 0;
+          if(data.butce) {
+             const cleaned = data.butce.replace(/[^0-9]/g, '');
+             rawButce = parseInt(cleaned) || 0;
+          }
+          document.getElementById("dynamic-butce").textContent = data.butce || "0 TL";
+
+          const dist = [
+            { name: "Frontend & UI", pct: 40, color: "#10b981" },
+            { name: "Backend & API", pct: 25, color: "#3b82f6" },
+            { name: "Veritabanı", pct: 15, color: "#f59e0b" },
+            { name: "Tasarım", pct: 12, color: "#8b5cf6" },
+            { name: "Test & QA", pct: 8, color: "#ec4899" }
+          ];
+
+          let legendHTML = "";
+          let conicStops = [];
+          let currentAngle = 0;
+
+          dist.forEach(d => {
+             const amount = (rawButce * d.pct) / 100;
+             const angle = (d.pct / 100) * 360;
+             conicStops.push(`${d.color} ${currentAngle}deg ${currentAngle + angle}deg`);
+             currentAngle += angle;
+
+             legendHTML += `
+                <div class="pie-legend-item">
+                  <span><span class="pie-legend-dot" style="background:${d.color};"></span>${d.name}</span>
+                  <span>${amount.toLocaleString('tr-TR')} TL</span>
+                </div>
+             `;
+          });
+
+          document.getElementById("dynamic-pie-chart").style.background = `conic-gradient(${conicStops.join(", ")})`;
+          document.getElementById("dynamic-pie-legend").innerHTML = legendHTML;
+
+          // 2. Alt Görev İlerlemeleri
+          const yuzde = data.yuzde || 0;
+          const miniTasks = [
+             { title: "Tasarım & Planlama", p: Math.min(100, yuzde + 20), color: "#8b5cf6" },
+             { title: "Geliştirme & Kodlama", p: yuzde, color: "#3b82f6" },
+             { title: "Test Aşaması", p: Math.max(0, yuzde - 25), color: "#f59e0b" }
+          ];
+
+          let miniHTML = "";
+          miniTasks.forEach(mt => {
+             miniHTML += `
+              <div class="mini-progress-item">
+                <div class="mini-progress-title">${mt.title}</div>
+                <div class="mini-circular" style="background: conic-gradient(${mt.color} ${mt.p * 3.6}deg, #e2e8f0 0deg);">
+                  <div class="mini-value">
+                    <span>Tamamlanan</span>
+                    <strong>${mt.p}%</strong>
+                  </div>
+                </div>
+              </div>
+             `;
+          });
+          document.getElementById("dynamic-mini-progress").innerHTML = miniHTML;
+
+          // 3. Ekip Verimliliği 
+          const ringPcts = [
+             Math.min(100, yuzde + 10),
+             Math.max(0, yuzde - 5),
+             Math.max(0, yuzde - 15),
+             Math.max(0, yuzde - 30)
+          ];
+          const ringLegend = `
+            <span>Tasarım Ekibi <strong>${ringPcts[0]}%</strong></span>
+            <span>Yazılım Ekibi <strong>${ringPcts[1]}%</strong></span>
+            <span>Test Ekibi <strong>${ringPcts[2]}%</strong></span>
+            <span>Proje Yönetimi <strong>${ringPcts[3]}%</strong></span>
+          `;
+          document.getElementById("dynamic-rings-legend").innerHTML = ringLegend;
+
+        } else {
+          const headerElement = document.querySelector(".page-header h1");
+          if(headerElement) headerElement.textContent = "GENEL RAPORLAR (Lütfen projelerden seçim yapın)";
+        }
+      });
+    </script>
+  </body>
+</html>

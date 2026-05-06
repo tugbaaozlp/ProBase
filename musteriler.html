@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Müşteri Yönetimi - ProBASE Admin</title>
+    <link rel="stylesheet" href="anasayfa.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --admin-primary: #2563eb;
+            --admin-bg: #f8fafc;
+            --font-main: 'Outfit', sans-serif;
+        }
+        body { font-family: var(--font-main); background: var(--admin-bg); margin: 0; overflow: hidden; }
+        .container { display: flex; height: 100vh; width: 100vw; }
+        
+        /* UNIFIED SIDEBAR */
+        .sidebar { width: 260px; background: #0f172a; color: white; padding: 30px 20px; display: flex; flex-direction: column; transition: 0.3s; flex-shrink: 0; }
+        .sidebar-logo { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
+        .sidebar-logo svg { width: 35px; height: 35px; }
+        .sidebar-logo h2 { font-size: 24px; font-weight: 900; margin: 0; color: white; }
+        
+        .sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 12px; text-align: left; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 14px; width: 100%; }
+        .nav-btn.active { background: #1e293b; color: white; }
+        .nav-btn:hover { background: #1e293b; color: white; }
+        
+        .cikis-btn { background: #fee2e2; color: #ef4444; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: auto; }
+
+        .dashboard { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .page-header h1 { margin: 0; font-size: 32px; font-weight: 800; color: #0f172a; }
+        .btn-add { background: var(--admin-primary); color: white; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 800; cursor: pointer; }
+
+        .table-card { background: white; border-radius: 24px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .customer-table { width: 100%; border-collapse: collapse; }
+        .customer-table th { background: #f8fafc; padding: 20px; text-align: left; font-size: 12px; font-weight: 800; color: #64748b; text-transform: uppercase; border-bottom: 1px solid #f1f5f9; }
+        .customer-table td { padding: 20px; font-size: 14px; color: #334155; border-bottom: 1px solid #f1f5f9; }
+        .customer-table tr:hover { background: #fbfcfe; cursor: pointer; }
+        
+        /* CHAT RIGHT SIDEBAR */
+        .chat-panel { width: 380px; background: white; border-left: 1px solid #e2e8f0; display: flex; flex-direction: column; transition: 0.3s; }
+        .chat-header { padding: 25px; border-bottom: 1px solid #f1f5f9; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 20px; background: #fbfcfe; display: flex; flex-direction: column; gap: 12px; }
+        .chat-input-area { padding: 20px; border-top: 1px solid #f1f5f9; }
+        .chat-box { display: flex; background: #f1f5f9; border-radius: 15px; padding: 10px 15px; align-items: center; gap: 10px; }
+        .chat-box input { flex: 1; border: none; background: transparent; outline: none; font-size: 14px; }
+        .btn-send { background: var(--admin-primary); color: white; border: none; width: 35px; height: 35px; border-radius: 10px; cursor: pointer; }
+
+        /* Modal Styles */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-content { background: white; padding: 35px; border-radius: 24px; width: 100%; max-width: 600px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <svg viewBox="0 0 120 120"><defs><linearGradient id="g10"><stop offset="0%" stopColor="#60a5fa"/><stop offset="100%" stopColor="#3b82f6"/></linearGradient></defs><rect x="14" y="14" width="92" height="92" rx="24" fill="none"/><path d="M36 32 H62 C70 32 76 38 76 46 V74 C76 82 70 88 62 88 H36" stroke="url(#g10)" stroke-width="12" stroke-linecap="round" fill="none"/><path d="M42 48 H60 C65 48 70 52 70 58 V58 C70 64 65 68 60 68 H42" stroke="url(#g10)" stroke-width="12" stroke-linecap="round" fill="none"/></svg>
+                <h2>ProBASE</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-btn" onclick="location.href='anasayfa.html'">🏠 DASHBOARD</button>
+                <button class="nav-btn active" onclick="location.href='musteriler.html'">👥 MÜŞTERİLER</button>
+                <button class="nav-btn" onclick="location.href='projeler.html'">📊 PROJELER</button>
+                <button class="nav-btn" onclick="location.href='sohbet.html'">💬 SOHBET</button>
+            </nav>
+            <button class="cikis-btn" onclick="localStorage.clear(); location.href='giriş.html'">Çıkış Yap</button>
+        </aside>
+
+        <main class="dashboard">
+            <div class="page-header">
+                <h1>Müşteri Yönetimi</h1>
+                <button class="btn-add" onclick="openModal()">+ Yeni Müşteri Kaydı</button>
+            </div>
+            <div class="table-card">
+                <table class="customer-table">
+                    <thead>
+                        <tr>
+                            <th>Müşteri / Şirket</th>
+                            <th>E-Posta</th>
+                            <th>Sektör</th>
+                            <th>Şifre</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customerTableBody"></tbody>
+                </table>
+            </div>
+        </main>
+
+        <aside class="chat-panel" id="chatPanel">
+            <div class="chat-header">
+                <div style="font-size:12px; font-weight:800; color:#64748b; text-transform:uppercase;">Sohbet</div>
+                <div id="activeChatName" style="font-size:18px; font-weight:900; color:#0f172a; margin-top:5px;">Müşteri Seçin</div>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div style="text-align:center; color:#94a3b8; margin-top:100px; font-size:14px;">Mesajları görmek için soldan bir müşteriye tıklayın.</div>
+            </div>
+            <div class="chat-input-area">
+                <div class="chat-box">
+                    <input type="text" id="chatInput" placeholder="Mesaj yazın..." onkeypress="if(event.key==='Enter')sendMsg()">
+                    <button class="btn-send" onclick="sendMsg()">➤</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- MODAL (Kayıt/Düzenle) -->
+    <div class="modal-overlay" id="customerModal">
+        <div class="modal-content">
+            <h2 id="modalTitle" style="margin:0 0 25px 0; font-weight:800;">Yeni Müşteri</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                <input type="text" id="mSirket" class="form-input" placeholder="Şirket Adı" style="padding:12px; border:1px solid #e2e8f0; border-radius:12px;">
+                <input type="text" id="mSektor" class="form-input" placeholder="Sektör" style="padding:12px; border:1px solid #e2e8f0; border-radius:12px;">
+                <input type="email" id="mEposta" class="form-input" placeholder="E-Posta" style="padding:12px; border:1px solid #e2e8f0; border-radius:12px;">
+                <input type="text" id="mSifre" class="form-input" placeholder="Şifre" style="padding:12px; border:1px solid #e2e8f0; border-radius:12px;">
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:15px; margin-top:30px;">
+                <button onclick="closeModal()" style="background:#f1f5f9; border:none; padding:12px 25px; border-radius:12px; font-weight:700;">İptal</button>
+                <button onclick="saveCustomer()" style="background:var(--admin-primary); color:white; border:none; padding:12px 25px; border-radius:12px; font-weight:800;">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let editingId = null;
+        let selectedCustomer = null;
+
+        async function loadCustomers() {
+            const body = document.getElementById("customerTableBody");
+            const r = await fetch('/api/customers');
+            const data = await r.json();
+            body.innerHTML = data.map(m => `
+                <tr onclick="selectCustomer('${m.kullaniciAdi}')">
+                    <td style="font-weight:700; color:#0f172a;">${m.kullaniciAdi}</td>
+                    <td style="color:#64748b;">${m.email}</td>
+                    <td>${m.departman}</td>
+                    <td style="font-family:monospace; color:var(--admin-primary); font-weight:800;">${m.sifre_plain}</td>
+                    <td>
+                        <button onclick="event.stopPropagation(); editCustomer(${m.id})" style="background:none; border:none; color:var(--admin-primary); font-weight:800; cursor:pointer; padding:6px 12px; border-radius:8px; transition:0.2s;" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='none'">Düzenle</button>
+                        <button onclick="event.stopPropagation(); deleteCustomer(${m.id}, '${m.kullaniciAdi}')" style="background:none; border:none; color:#ef4444; font-weight:800; cursor:pointer; padding:6px 12px; border-radius:8px; transition:0.2s; margin-left:5px;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='none'">Sil</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function selectCustomer(name) {
+            selectedCustomer = name;
+            document.getElementById("activeChatName").textContent = name;
+            renderMessages(true);
+        }
+
+        async function renderMessages(force) {
+            if(!selectedCustomer) return;
+            const me = "Admin User";
+            const r = await fetch(`/api/messages?receiver=${encodeURIComponent(selectedCustomer)}&sender=${encodeURIComponent(me)}`);
+            const msgs = await r.json();
+            const box = document.getElementById("chatMessages");
+            box.innerHTML = msgs.map(m => {
+                const self = m.sender === me;
+                return `<div style="align-self:${self?'flex-end':'flex-start'}; max-width:85%;">
+                    <div style="padding:10px 15px; border-radius:15px; background:${self?'var(--admin-primary)':'white'}; color:${self?'white':'#1e293b'}; border:${self?'none':'1px solid #f1f5f9'}; font-size:13px;">${m.text}</div>
+                    <div style="font-size:9px; color:#94a3b8; margin-top:4px; text-align:${self?'right':'left'}">${m.time}</div>
+                </div>`;
+            }).join('');
+            if(force) box.scrollTop = box.scrollHeight;
+        }
+
+        async function sendMsg() {
+            const i = document.getElementById("chatInput");
+            const t = i.value.trim(); if(!t || !selectedCustomer) return;
+            await fetch('/api/messages', {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ sender:'Admin User', receiver:selectedCustomer, text:t, time:new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) })
+            });
+            i.value = ""; renderMessages(true);
+        }
+
+        function openModal() { editingId = null; document.getElementById("customerModal").style.display="flex"; }
+        function closeModal() { document.getElementById("customerModal").style.display="none"; }
+        async function editCustomer(id) {
+            editingId = id;
+            const r = await fetch('/api/customers');
+            const data = await r.json();
+            const m = data.find(x => x.id === id);
+            document.getElementById("mSirket").value = m.kullaniciAdi;
+            document.getElementById("mEposta").value = m.email;
+            document.getElementById("mSifre").value = m.sifre_plain;
+            document.getElementById("mSektor").value = m.departman;
+            document.getElementById("customerModal").style.display="flex";
+        }
+
+        async function saveCustomer() {
+            const sirket = document.getElementById("mSirket").value;
+            const eposta = document.getElementById("mEposta").value;
+            const sifre = document.getElementById("mSifre").value;
+            const sektor = document.getElementById("mSektor").value;
+            const method = editingId ? 'PUT' : 'POST';
+            const url = editingId ? `/api/customers/${editingId}` : '/api/customers';
+            await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify({ sirket, eposta, sifre, sektor }) });
+            closeModal(); loadCustomers();
+        }
+
+        async function deleteCustomer(id, name) {
+            if(!confirm(`"${name}" adlı müşteriyi silmek istediğinizden emin misiniz?`)) return;
+            const r = await fetch(`/api/customers/${id}`, { method: 'DELETE' });
+            if(r.ok) {
+                loadCustomers();
+                if(selectedCustomer === name) {
+                    selectedCustomer = null;
+                    document.getElementById('activeChatName').textContent = 'Müşteri Seçin';
+                    document.getElementById('chatMessages').innerHTML = '<div style="text-align:center; color:#94a3b8; margin-top:100px; font-size:14px;">Mesajları görmek için soldan bir müşteriye tıklayın.</div>';
+                }
+            } else {
+                alert('Silme işlemi başarısız oldu.');
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadCustomers();
+            setInterval(() => renderMessages(false), 3000);
+        });
+    </script>
+</body>
+</html>

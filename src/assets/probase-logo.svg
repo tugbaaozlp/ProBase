@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 140" role="img" aria-label="ProBASE logo">
+  <defs>
+    <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="45%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    <linearGradient id="accent-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+  </defs>
+  <rect width="520" height="140" fill="none" />
+  <path d="M72 14 L166 14 C180 14 193 23 198 37 L218 82 C222 95 214 109 201 113 L102 134 C89 138 75 131 71 118 L30 39 C27 29 31 18 39 12 L72 14 Z" fill="url(#logo-gradient)" opacity="0.98" />
+  <path d="M52 40 L120 40 C133 40 144 51 144 64 C144 77 132 88 120 88 H74 L62 120" stroke="white" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <path d="M92 40 L164 40 C176 40 186 50 186 62 C186 74 175 84 164 84 H138" stroke="url(#accent-gradient)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <text x="222" y="55" font-family="Segoe UI, sans-serif" font-size="46" font-weight="700" fill="#0f172a">ProBASE</text>
+  <text x="222" y="92" font-family="Segoe UI, sans-serif" font-size="18" fill="#475569">Proje &amp; Kaynak Yönetimi</text>
+</svg>

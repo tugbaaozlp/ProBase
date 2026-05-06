@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yeni Şifre Oluştur - ProBASE</title>
+    <link rel="stylesheet" href="giriş.css" />
+  </head>
+  <body>
+    <main class="giris-sayfasi">
+      <section class="giris-karti">
+        <div class="baslik-alani">
+          <h2>Yeni Şifre Oluştur</h2>
+          <p class="açıklama">Hesabınız için güçlü bir şifre belirleyin</p>
+        </div>
+
+        <form class="giris-formu" onsubmit="sifreYenile(event)">
+          <div class="form-grup">
+            <label for="kod">Doğrulama Kodu:</label>
+            <input
+              type="text"
+              id="kod"
+              name="kod"
+              placeholder="123456"
+              maxlength="6"
+              required
+            />
+          </div>
+
+          <div class="form-grup">
+            <label for="yeni-sifre">Yeni Parola:</label>
+            <input
+              type="password"
+              id="yeni-sifre"
+              name="yeni-sifre"
+              placeholder="••••••••"
+              minlength="8"
+              required
+            />
+          </div>
+
+          <div class="form-grup">
+            <label for="onayla-sifre">Parolayı Onayla:</label>
+            <input
+              type="password"
+              id="onayla-sifre"
+              name="onayla-sifre"
+              placeholder="••••••••"
+              minlength="8"
+              required
+            />
+          </div>
+
+          <button type="submit" class="giris-dugmesi">Şifreyi Yenile</button>
+        </form>
+
+        <div class="dön-alani">
+          <p>
+            <a href="giriş.html" class="dön-linki">← Giriş sayfasına dön</a>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      function sifreYenile(event) {
+        event.preventDefault();
+        const yeniSifre = document.getElementById("yeni-sifre").value;
+        const onaylaSifre = document.getElementById("onayla-sifre").value;
+
+        if (yeniSifre !== onaylaSifre) {
+          alert("Parolalar eşleşmiyor. Lütfen tekrar deneyin.");
+          return;
+        }
+
+        alert(
+          "Şifreniz başarıyla güncellendi! Giriş sayfasına yönlendiriliyorsunuz.",
+        );
+        window.location.href = "giriş.html";
+      }
+    </script>
+  </body>
+</html>

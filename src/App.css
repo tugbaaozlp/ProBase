@@ -1,0 +1,137 @@
+.giris-sayfasi {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: radial-gradient(circle at top left, #5093f8 0%, #2d67d1 42%, #12398f 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.giris-sayfasi::before,
+.giris-sayfasi::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+}
+
+.giris-sayfasi::before {
+  width: 360px;
+  height: 360px;
+  background: rgba(255, 255, 255, 0.18);
+  top: -110px;
+  left: -110px;
+}
+
+.giris-sayfasi::after {
+  width: 500px;
+  height: 500px;
+  background: rgba(16, 39, 119, 0.24);
+  bottom: -150px;
+  right: -120px;
+}
+
+.giris-karti {
+  position: relative;
+  width: min(100%, 440px);
+  padding: 44px 36px;
+  background: #ffffff;
+  border-radius: 30px;
+  box-shadow: 0 28px 80px rgba(8, 30, 80, 0.18);
+  z-index: 1;
+  text-align: center;
+}
+
+.logo-blok {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 36px;
+}
+
+.probase-logo {
+  width: 88px;
+  height: 88px;
+  display: grid;
+  place-items: center;
+  border-radius: 26px;
+  background: linear-gradient(145deg, #eaf2ff 0%, #f8fbff 100%);
+  box-shadow: 0 18px 36px rgba(15, 65, 170, 0.12);
+}
+
+.probase-logo svg {
+  width: 52px;
+  height: 52px;
+}
+
+.marka-yazi {
+  text-align: left;
+}
+
+.marka-yazi h1 {
+  margin: 0;
+  font-size: 32px;
+  line-height: 1.05;
+  color: #0f172a;
+}
+
+.marka-yazi p {
+  margin: 8px 0 0;
+  color: #58616f;
+  font-size: 15px;
+}
+
+.butonlar {
+  display: grid;
+  gap: 14px;
+}
+
+.butonlar button {
+  width: 100%;
+  padding: 16px 0;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.butonlar button:nth-child(1) {
+  background: #1d4ed8;
+  color: white;
+}
+
+.butonlar button:nth-child(2) {
+  background: #2563eb;
+  color: white;
+}
+
+.butonlar button:nth-child(3) {
+  background: #3b82f6;
+  color: white;
+}
+
+.butonlar button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.18);
+}
+
+@media (max-width: 480px) {
+  .giris-karti {
+    padding: 28px 22px;
+  }
+
+  .marka-ikon {
+    width: 72px;
+    height: 72px;
+  }
+
+  .marka-yazi h1 {
+    font-size: 28px;
+  }
+}

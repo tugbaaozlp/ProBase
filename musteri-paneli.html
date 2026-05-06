@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Müşteri Paneli - ProBASE</title>
+  <link rel="stylesheet" href="anasayfa.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --m-primary: #3b82f6;
+      --m-bg: #f8fafc;
+      --m-sidebar: #0f172a;
+      --font-main: 'Outfit', sans-serif;
+    }
+    
+    * { box-sizing: border-box; font-family: var(--font-main); }
+    body { background: var(--m-bg); margin: 0; height: 100vh; overflow: hidden; }
+
+    .layout { display: flex; height: 100vh; width: 100vw; }
+    
+    /* SIDEBAR */
+    .sidebar { width: 260px; background: var(--m-sidebar); color: white; display: flex; flex-direction: column; padding: 30px 20px; transition: 0.3s; }
+    .sidebar-logo { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
+    .sidebar-logo h2 { font-size: 24px; font-weight: 900; margin: 0; }
+    .sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+    .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 12px; text-align: left; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 14px; }
+    .nav-btn.active { background: #1e293b; color: white; }
+    .nav-btn:hover { background: #1e293b; color: white; }
+
+    /* MAIN */
+    .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .top-bar { height: 70px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
+    .top-user { display: flex; align-items: center; gap: 12px; }
+    .top-user img { width: 40px; height: 40px; border-radius: 12px; }
+
+    .content-area { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 25px; }
+    
+    .welcome-card { background: white; border-radius: 24px; padding: 35px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); display: flex; align-items: center; gap: 30px; }
+    .welcome-card h1 { font-size: 32px; font-weight: 800; color: #0f172a; margin: 0; }
+    
+    .stats-row { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
+    .stat-card { background: white; border-radius: 24px; padding: 30px; border: 1px solid #e2e8f0; }
+    
+    .progress-big { width: 220px; height: 220px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; margin: 0 auto; }
+    .progress-big::before { content: ""; position: absolute; width: 170px; height: 170px; background: white; border-radius: 50%; }
+    .progress-val { position: relative; font-size: 52px; font-weight: 900; color: #0f172a; }
+
+    .fin-box { margin-top: 15px; }
+    .fin-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+    .fin-label { font-size: 14px; color: #64748b; font-weight: 600; }
+    .fin-val { font-size: 16px; font-weight: 800; color: #1e293b; }
+
+    /* CHAT SIDEBAR */
+    .chat-sidebar { width: 380px; background: white; border-left: 1px solid #e2e8f0; display: flex; flex-direction: column; }
+    .chat-header { padding: 20px 25px; border-bottom: 1px solid #e2e8f0; font-size: 16px; font-weight: 800; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 20px; background: #fbfcfe; display: flex; flex-direction: column; gap: 15px; }
+    .chat-input-area { padding: 20px; background: white; border-top: 1px solid #f1f5f9; }
+    .chat-input-box { display: flex; background: #f1f5f9; border-radius: 15px; padding: 10px 15px; align-items: center; gap: 10px; }
+    .chat-input-box input { flex: 1; border: none; background: transparent; outline: none; font-size: 14px; }
+    .chat-send-btn { background: var(--m-primary); color: white; border: none; width: 35px; height: 35px; border-radius: 10px; cursor: pointer; }
+
+    @media (max-width: 1200px) { .chat-sidebar { display: none; } }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <svg viewBox="0 0 120 120" style="width:35px;"><defs><linearGradient id="g9"><stop offset="0%" stopColor="#60a5fa"/><stop offset="100%" stopColor="#3b82f6"/></linearGradient></defs><rect x="14" y="14" width="92" height="92" rx="24" fill="none"/><path d="M36 32 H62 C70 32 76 38 76 46 V74 C76 82 70 88 62 88 H36" stroke="url(#g9)" stroke-width="12" stroke-linecap="round" fill="none"/><path d="M42 48 H60 C65 48 70 52 70 58 V58 C70 64 65 68 60 68 H42" stroke="url(#g9)" stroke-width="12" stroke-linecap="round" fill="none"/></svg>
+        <h2>ProBASE</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-btn active">📊 Projem</button>
+        <button class="nav-btn" onclick="location.href='musteri-faturalar.html'">🧾 Faturalarım</button>
+      </nav>
+      <button class="nav-btn" style="color:#ef4444; margin-top:auto;" onclick="localStorage.clear(); location.href='giriş.html'">Çıkış Yap</button>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="top-bar">
+        <div class="top-user">
+          <img id="uAvatar" src="">
+          <span id="uName" style="font-weight:800; color:#1e293b;">Yükleniyor...</span>
+        </div>
+        <div style="color:#64748b; font-size:13px; font-weight:600;" id="currentDate"></div>
+      </header>
+
+      <main class="content-area">
+        <div class="welcome-card">
+          <div style="background:#eff6ff; padding:20px; border-radius:20px;">🚀</div>
+          <div>
+            <h1>Hoş Geldiniz, <span id="welcomeName">...</span></h1>
+            <p style="color:#64748b; margin-top:5px; font-weight:500;">Projenizin güncel durumunu ve finansal özetini buradan takip edebilirsiniz.</p>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+            <div style="font-weight:800; color:#64748b; text-transform:uppercase; font-size:12px; margin-bottom:20px;">Proje Tamamlanma Oranı</div>
+            <div class="progress-big" id="pCircle">
+                <div class="progress-val" id="pVal">0%</div>
+            </div>
+            <p id="pName" style="margin-top:20px; font-size:18px; font-weight:800; color:#0f172a;">Proje Adı Yükleniyor...</p>
+          </div>
+
+          <div class="stat-card">
+            <h3 style="font-weight:800; color:#0f172a; margin-bottom:20px;">Finansal Özet</h3>
+            <div class="fin-box">
+                <div class="fin-item"><span class="fin-label">Toplam Bütçe</span><span class="fin-val" id="fBudget">0 ₺</span></div>
+                <div class="fin-item"><span class="fin-label">Kategori</span><span class="fin-val" id="fCat">-</span></div>
+                <div class="fin-item"><span class="fin-label">Teslim Tarihi</span><span class="fin-val" id="fDeadline">-</span></div>
+                <div class="fin-item" style="border:none;"><span class="fin-label">Durum</span><span class="fin-val" id="fStatus" style="color:#10b981;">AKTİF</span></div>
+            </div>
+            <div style="margin-top:25px; padding:20px; background:#f8fafc; border-radius:15px; border:1px solid #f1f5f9;">
+                <div style="font-size:12px; font-weight:700; color:#94a3b8;">SİSTEM NOTU</div>
+                <p style="font-size:13px; color:#64748b; margin-top:5px; line-height:1.5;">Projeniz ekiplerimiz tarafından titizlikle yürütülmektedir. Güncel ilerleme gerçek zamanlı olarak yansıtılmaktadır.</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <aside class="chat-sidebar">
+      <div class="chat-header">Destek / Admin İletişim 💬</div>
+      <div style="padding:15px 25px; background:#fafafa; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; gap:12px;">
+          <div style="width:10px; height:10px; background:#10b981; border-radius:50%;"></div>
+          <span style="font-size:12px; font-weight:800; color:#1e293b;">Admin User (Online)</span>
+      </div>
+      <div class="chat-messages" id="cMsgs"></div>
+      <div class="chat-input-area">
+        <div class="chat-input-box">
+          <input type="text" id="cInput" placeholder="Admin'e mesaj yazın..." onkeypress="if(event.key==='Enter')sendMsg()">
+          <button class="chat-send-btn" onclick="sendMsg()">➤</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const me = localStorage.getItem("userName");
+      if(!me) { location.href="giriş.html"; return; }
+      document.getElementById("uName").textContent = me;
+      document.getElementById("welcomeName").textContent = me;
+      document.getElementById("uAvatar").src = `https://api.dicebear.com/7.x/adventurer/svg?seed=${me.replace(/\s+/g,"")}&backgroundColor=ffdfbf`;
+      document.getElementById("currentDate").textContent = new Date().toLocaleDateString('tr-TR', { day:'numeric', month:'long', year:'numeric' });
+      
+      loadData();
+      setInterval(sync, 3000);
+    });
+
+    async function loadData(){
+        const me = localStorage.getItem("userName");
+        const r = await fetch(`/api/my-project?user=${encodeURIComponent(me)}`);
+        const p = await r.json();
+        if(p.ad) {
+            document.getElementById("pName").textContent = p.ad;
+            document.getElementById("fBudget").textContent = p.butce + " ₺";
+            document.getElementById("fCat").textContent = p.kategori || "Genel";
+            document.getElementById("fDeadline").textContent = p.bitis || "Belli değil";
+            document.getElementById("fStatus").textContent = (p.durum || "AKTİF").toUpperCase();
+            
+            const prog = p.ilerleme || 0;
+            document.getElementById("pVal").textContent = prog + "%";
+            document.getElementById("pCircle").style.background = `conic-gradient(var(--m-primary) ${prog * 3.6}deg, #f1f5f9 0deg)`;
+        } else {
+            document.getElementById("pName").textContent = "Atanmış Proje Bulunamadı";
+        }
+        renderMsgs(true);
+    }
+
+    async function sync(){ renderMsgs(false); }
+
+    async function renderMsgs(force){
+        const me = localStorage.getItem("userName");
+        const r = await fetch(`/api/messages?receiver=Admin User&sender=${encodeURIComponent(me)}`);
+        const msgs = await r.json();
+        const body = document.getElementById("cMsgs");
+        body.innerHTML = msgs.map(m => {
+            const self = m.sender === me;
+            return `<div style="align-self:${self?'flex-end':'flex-start'}; max-width:85%;"><div style="font-size:10px; color:#94a3b8; text-align:${self?'right':'left'}">${m.sender} ${m.time}</div><div style="padding:12px; border-radius:15px; background:${self?'var(--m-primary)':'white'}; color:${self?'white':'#1e293b'}; border:${self?'none':'1px solid #f1f5f9'}; font-size:14px;">${m.text}</div></div>`;
+        }).join('');
+        if(force) body.scrollTop = body.scrollHeight;
+    }
+
+    async function sendMsg(){
+        const i = document.getElementById("cInput");
+        const t = i.value.trim(); if(!t) return;
+        const me = localStorage.getItem("userName");
+        await fetch('/api/messages', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ sender:me, receiver:'Admin User', text:t, time:new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) }) });
+        i.value = ""; renderMsgs(true);
+    }
+  </script>
+</body>
+</html>

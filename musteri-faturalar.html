@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faturalarım - ProBASE</title>
+    <link rel="stylesheet" href="anasayfa.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --m-primary: #3b82f6;
+            --m-bg: #f8fafc;
+            --m-sidebar: #0f172a;
+            --font-main: 'Outfit', sans-serif;
+        }
+        * { box-sizing: border-box; font-family: var(--font-main); }
+        body { background: var(--m-bg); margin: 0; height: 100vh; overflow: hidden; }
+        .layout { display: flex; height: 100vh; width: 100vw; }
+        
+        /* UNIFIED CUSTOMER SIDEBAR */
+        .sidebar { width: 260px; background: var(--m-sidebar); color: white; display: flex; flex-direction: column; padding: 30px 20px; transition: 0.3s; flex-shrink: 0; }
+        .sidebar-logo { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
+        .sidebar-logo svg { width: 35px; height: 35px; }
+        .sidebar-logo h2 { font-size: 24px; font-weight: 900; margin: 0; }
+        
+        .sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 12px; text-align: left; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 14px; width: 100%; }
+        .nav-btn.active { background: #1e293b; color: white; }
+        .nav-btn:hover { background: #1e293b; color: white; }
+
+        .cikis-btn { background: #fee2e2; color: #ef4444; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: auto; transition: 0.2s; text-align: center; font-size: 14px; }
+        .cikis-btn:hover { background: #fecaca; }
+
+        /* MAIN CONTENT */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .top-bar { height: 70px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
+        .top-user { display: flex; align-items: center; gap: 12px; }
+        .top-user img { width: 40px; height: 40px; border-radius: 12px; }
+
+        .content-area { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 25px; }
+        
+        .summary-card { background: white; border-radius: 24px; padding: 30px; border: 1px solid #e2e8f0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .sum-item { display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #f1f5f9; padding-right: 20px; }
+        .sum-item:last-child { border: none; }
+        .sum-label { font-size: 13px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+        .sum-val { font-size: 20px; font-weight: 800; color: #0f172a; }
+
+        .invoice-card { background: white; border-radius: 24px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .invoice-table { width: 100%; border-collapse: collapse; }
+        .invoice-table th { background: #f8fafc; padding: 20px; text-align: left; font-size: 12px; font-weight: 800; color: #64748b; text-transform: uppercase; border-bottom: 1px solid #f1f5f9; }
+        .invoice-table td { padding: 20px; font-size: 14px; color: #334155; border-bottom: 1px solid #f1f5f9; }
+        
+        .badge { padding: 6px 12px; border-radius: 10px; font-size: 12px; font-weight: 800; }
+        .badge-paid { background: #ecfdf5; color: #10b981; }
+        .badge-pending { background: #fff7ed; color: #f97316; }
+
+        .btn-pay { background: #0f172a; color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-pay:hover { background: #1e293b; }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <svg viewBox="0 0 120 120"><defs><linearGradient id="g13"><stop offset="0%" stopColor="#60a5fa"/><stop offset="100%" stopColor="#3b82f6"/></linearGradient></defs><rect x="14" y="14" width="92" height="92" rx="24" fill="none"/><path d="M36 32 H62 C70 32 76 38 76 46 V74 C76 82 70 88 62 88 H36" stroke="url(#g13)" stroke-width="12" stroke-linecap="round" fill="none"/><path d="M42 48 H60 C65 48 70 52 70 58 V58 C70 64 65 68 60 68 H42" stroke="url(#g13)" stroke-width="12" stroke-linecap="round" fill="none"/></svg>
+                <h2>ProBASE</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-btn" onclick="location.href='musteri-paneli.html'">📊 Projem</button>
+                <button class="nav-btn active" onclick="location.href='musteri-faturalar.html'">🧾 Faturalarım</button>
+            </nav>
+            <button class="cikis-btn" onclick="localStorage.clear(); location.href='giriş.html'">Çıkış Yap</button>
+        </aside>
+
+        <div class="main-wrapper">
+            <header class="top-bar">
+                <div class="top-user">
+                  <img id="uAvatar" src="">
+                  <span id="uName" style="font-weight:800; color:#1e293b;">...</span>
+                </div>
+                <div style="font-weight:800; color:#0f172a; font-size:18px;">Ödemeler ve Faturalar</div>
+            </header>
+
+            <main class="content-area">
+                <div class="summary-card">
+                    <div class="sum-item"><span class="sum-label">Toplam Bedel</span><span class="sum-val">20,000,000 ₺</span></div>
+                    <div class="sum-item"><span class="sum-label">Ödenen</span><span class="sum-val" style="color:#10b981;">10,000,000 ₺</span></div>
+                    <div class="sum-item"><span class="sum-label">Kalan Borç</span><span class="sum-val" style="color:#ef4444;">10,000,000 ₺</span></div>
+                    <div class="sum-item"><span class="sum-label">Sonraki Ödeme</span><span class="sum-val">15 Haz 2026</span></div>
+                </div>
+
+                <div class="invoice-card">
+                    <table class="invoice-table">
+                        <thead>
+                            <tr>
+                                <th>Fatura No</th>
+                                <th>Açıklama</th>
+                                <th>Tutar</th>
+                                <th>Tarih</th>
+                                <th>Durum</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-weight:700;">#fat2026-001</td>
+                                <td>Analiz aşaması taksiti</td>
+                                <td>4,000,000 ₺</td>
+                                <td>15 Şub 2026</td>
+                                <td><span class="badge badge-paid">ÖDENDİ</span></td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:700;">#fat2026-002</td>
+                                <td>Tasarım Aşaması</td>
+                                <td>6,000,000 ₺</td>
+                                <td>10 Mar 2026</td>
+                                <td><span class="badge badge-paid">ÖDENDİ</span></td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:700;">#fat2026-003</td>
+                                <td>Entegrasyon Bedeli</td>
+                                <td>5,000,000 ₺</td>
+                                <td>20 Nis 2026</td>
+                                <td><span class="badge badge-pending">BEKLEMEDE</span></td>
+                                <td><button class="btn-pay">Ödeme Yap</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const me = localStorage.getItem("userName") || "Müşteri";
+            document.getElementById("uName").textContent = me;
+            document.getElementById("uAvatar").src = `https://api.dicebear.com/7.x/adventurer/svg?seed=${me.replace(/\s+/g,"")}&backgroundColor=ffdfbf`;
+        });
+    </script>
+</body>
+</html>

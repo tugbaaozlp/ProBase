@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje Detayı - ProBASE Admin</title>
+    <link rel="stylesheet" href="anasayfa.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --admin-primary: #2563eb;
+            --admin-bg: #f8fafc;
+            --font-main: 'Outfit', sans-serif;
+        }
+        body { font-family: var(--font-main); background: var(--admin-bg); margin: 0; }
+        .container { display: flex; height: 100vh; }
+        
+        .sidebar { width: 260px; background: #0f172a; color: white; padding: 30px 20px; display: flex; flex-direction: column; }
+        .sidebar-logo { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
+        .sidebar-logo h2 { font-size: 24px; font-weight: 900; margin: 0; }
+        
+        .dashboard { flex: 1; padding: 40px; overflow-y: auto; }
+        
+        .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header-section h1 { margin: 0; font-size: 32px; font-weight: 800; color: #0f172a; }
+
+        .summary-row { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-bottom: 40px; }
+        .summary-card { background: white; border-radius: 24px; padding: 30px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 40px; }
+        
+        .progress-circle { width: 150px; height: 150px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
+        .progress-circle::before { content: ""; position: absolute; width: 110px; height: 110px; background: white; border-radius: 50%; }
+        .progress-val { position: relative; font-size: 32px; font-weight: 900; color: #0f172a; }
+
+        /* Personnel Grouped Section */
+        .personnel-section { margin-bottom: 40px; }
+        .personnel-section-title { font-size: 20px; font-weight: 800; color: #1e293b; margin-bottom: 20px; padding-left: 10px; border-left: 4px solid var(--admin-primary); }
+
+        .task-groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); gap: 25px; }
+        
+        .personnel-card { background: white; border-radius: 24px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .personnel-header { background: #f8fafc; padding: 20px 25px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
+        .p-meta { display: flex; align-items: center; gap: 12px; }
+        .p-avatar { width: 45px; height: 45px; border-radius: 12px; background: #e2e8f0; }
+        .p-name { font-weight: 800; color: #0f172a; font-size: 16px; }
+        .p-dept { font-size: 12px; color: #64748b; font-weight: 600; text-transform: uppercase; }
+        
+        .p-completion { font-weight: 800; color: var(--admin-primary); background: #eff6ff; padding: 6px 12px; border-radius: 10px; font-size: 13px; }
+
+        .task-list { padding: 20px 25px; }
+        .task-row { display: flex; align-items: center; gap: 15px; padding: 12px 0; border-bottom: 1px solid #f8fafc; }
+        .task-row:last-child { border-bottom: none; }
+        .task-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .task-name { flex: 1; font-size: 14px; font-weight: 600; color: #334155; }
+        .task-status-badge { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; }
+        .status-done { background: #ecfdf5; color: #10b981; }
+        .status-pending { background: #fff7ed; color: #f97316; }
+
+        .cikis-btn { background: #fee2e2; color: #ef4444; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: auto; }
+
+        /* MODAL STYLES */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(10px);
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 30px;
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            animation: modalScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes modalScale {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .modal-content img {
+            max-width: 100%;
+            border-radius: 20px;
+            display: block;
+        }
+        .close-modal {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 45px;
+            height: 45px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 15px rgba(239, 68, 68, 0.3);
+            transition: 0.2s;
+        }
+        .close-modal:hover { transform: scale(1.1); background: #dc2626; }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <svg viewBox="0 0 120 120" style="width:35px;"><defs><linearGradient id="g6"><stop offset="0%" stopColor="#60a5fa"/><stop offset="100%" stopColor="#3b82f6"/></linearGradient></defs><rect x="14" y="14" width="92" height="92" rx="24" fill="none"/><path d="M36 32 H62 C70 32 76 38 76 46 V74 C76 82 70 88 62 88 H36" stroke="url(#g6)" stroke-width="12" stroke-linecap="round" fill="none"/><path d="M42 48 H60 C65 48 70 52 70 58 V58 C70 64 65 68 60 68 H42" stroke="url(#g6)" stroke-width="12" stroke-linecap="round" fill="none"/></svg>
+                <h2>ProBASE</h2>
+            </div>
+            <nav class="sidebar-menu" style="display:flex; flex-direction:column; gap:10px; flex:1;">
+                <button class="menu-btn" onclick="location.href='musteriler.html'">👥 MÜŞTERİLER</button>
+                <button class="menu-btn active" onclick="location.href='projeler.html'">📊 PROJELER</button>
+            </nav>
+            <button class="cikis-btn" onclick="localStorage.clear(); location.href='giriş.html'">Çıkış Yap</button>
+        </aside>
+
+        <main class="dashboard">
+            <div class="header-section">
+                <div>
+                    <h1 id="projectTitle">Proje Detayları</h1>
+                    <p style="color:#64748b; margin-top:5px;">Ekiplerin görev tamamlanma oranlarını ve performansını takip edin.</p>
+                </div>
+                <button onclick="location.href='projeler.html'" style="background:white; border:1px solid #e2e8f0; padding:10px 20px; border-radius:12px; font-weight:700; cursor:pointer;">← Geri Dön</button>
+            </div>
+
+            <div class="summary-row">
+                <div class="summary-card">
+                    <div class="progress-circle" id="overallProgressCircle">
+                        <span class="progress-val" id="overallProgressText">0%</span>
+                    </div>
+                    <div>
+                        <div style="font-size:14px; color:#64748b; font-weight:700; text-transform:uppercase;">Toplam Bütçe</div>
+                        <div style="font-size:32px; font-weight:900; color:#0f172a; margin-top:5px;" id="projectBudget">0 ₺</div>
+                        <div style="margin-top:15px; display:flex; gap:10px;">
+                            <span id="projectCategory" style="background:#eff6ff; color:#3b82f6; padding:5px 12px; border-radius:10px; font-size:12px; font-weight:800;">Kategori</span>
+                            <span id="projectDeadline" style="background:#f8fafc; border:1px solid #e2e8f0; color:#64748b; padding:5px 12px; border-radius:10px; font-size:12px; font-weight:700;">Teslim</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:20px;">
+                    <button onclick="location.href='yeni-gorev.html'" style="flex:1; background:var(--admin-primary); color:white; border:none; border-radius:24px; font-weight:800; font-size:16px; cursor:pointer;">+ Yeni Görev Ata</button>
+                    <button onclick="goToReport()" style="flex:1; background:#0f172a; color:white; border:none; border-radius:24px; font-weight:800; font-size:16px; cursor:pointer;">Rapor Al</button>
+                </div>
+            </div>
+
+            <div class="personnel-section">
+                <div class="personnel-section-title">Ekip Performansı ve Görev Dağılımı</div>
+                <div class="task-groups-grid" id="taskGroups">
+                    <!-- JS ile departman ve kişi bazlı gruplanacak -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const data = JSON.parse(localStorage.getItem("aktifProje"));
+            if(data) {
+                document.getElementById("projectTitle").textContent = data.ad;
+                document.getElementById("projectBudget").textContent = data.butce + " ₺";
+                document.getElementById("overallProgressText").textContent = (data.ilerleme || 0) + "%";
+                document.getElementById("projectCategory").textContent = data.kategori || "GENEL";
+                document.getElementById("projectDeadline").textContent = "Teslim: " + (data.bitis || "Belli değil");
+                
+                const deg = (data.ilerleme || 0) * 3.6;
+                document.getElementById("overallProgressCircle").style.background = `conic-gradient(var(--admin-primary) ${deg}deg, #f1f5f9 0deg)`;
+            }
+            renderGroupedTasks();
+        });
+
+        async function renderGroupedTasks() {
+            const container = document.getElementById("taskGroups");
+            container.innerHTML = "<p>Görevler senkronize ediliyor...</p>";
+            
+            try {
+                const r = await fetch('/api/tasks');
+                const tasks = await r.json();
+                container.innerHTML = "";
+
+                // Group tasks by personnel
+                const groups = {};
+                tasks.forEach(t => {
+                    if(!groups[t.sorumlu_kisi]) {
+                        groups[t.sorumlu_kisi] = {
+                            name: t.sorumlu_kisi,
+                            dept: t.departman,
+                            tasks: []
+                        };
+                    }
+                    groups[t.sorumlu_kisi].tasks.push(t);
+                });
+
+                Object.values(groups).forEach(g => {
+                    const doneCount = g.tasks.filter(t => t.progress === 100).length;
+                    const completion = Math.round((doneCount / g.tasks.length) * 100);
+                    
+                    const card = document.createElement("div");
+                    card.className = "personnel-card";
+                    card.innerHTML = `
+                        <div class="personnel-header">
+                            <div class="p-meta">
+                                <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=${g.name.replace(/\s+/g,"")}&backgroundColor=ffdfbf" class="p-avatar">
+                                <div>
+                                    <div class="p-name">${g.name}</div>
+                                    <div class="p-dept">${g.dept || 'Ekip Üyesi'}</div>
+                                </div>
+                            </div>
+                            <div class="p-completion">%${completion} Tamamlandı</div>
+                        </div>
+                        <div class="task-list">
+                            ${g.tasks.map(t => `
+                                <div class="task-row">
+                                    <div class="task-dot" style="background:${t.progress === 100 ? '#10b981' : '#f97316'}"></div>
+                                    <div class="task-name">${t.baslik}</div>
+                                    <div class="task-status-badge ${t.progress === 100 ? 'status-done' : 'status-pending'}">
+                                        ${t.progress === 100 ? 'TAMAMLANDI' : 'DEVAM EDİYOR'}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch(e) { container.innerHTML = "<p>Görevler yüklenirken hata oluştu.</p>"; }
+        }
+
+        function goToReport() {
+            const data = JSON.parse(localStorage.getItem("aktifProje"));
+            if (data && data.id) {
+                window.open(`rapor-detay.html?id=${data.id}`, '_blank');
+            } else {
+                alert("Proje bilgisi bulunamadı.");
+            }
+        }
+    </script>
+</body>
+</html>

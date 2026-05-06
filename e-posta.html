@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Şifre Yenileme - ProBASE</title>
+    <link rel="stylesheet" href="giriş.css" />
+  </head>
+  <body>
+    <main class="giris-sayfasi">
+      <section class="giris-karti">
+        <div class="baslik-alani">
+          <h2>Şifre Yenileme</h2>
+          <p class="açıklama">
+            Hesap kurtarma işlemini tamamlamak için e-posta adresinizi girin
+          </p>
+        </div>
+
+        <form class="giris-formu" onsubmit="ePostaGonder(event)">
+          <div class="form-grup">
+            <label for="email">Email adresi:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="tozal58@gmail.com"
+              required
+            />
+          </div>
+
+          <button type="submit" class="giris-dugmesi">Kodu Gönder</button>
+        </form>
+
+        <div class="dön-alani">
+          <p>
+            <a href="giriş.html" class="dön-linki">← Giriş sayfasına dön</a>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      function ePostaGonder(event) {
+        event.preventDefault();
+        const email = document.getElementById("email").value;
+        alert(email + " adresine doğrulama kodu gönderildi.");
+        // Şifre yenileme sayfasına yönlendir
+        window.location.href = "parolayenile.html";
+      }
+    </script>
+  </body>
+</html>

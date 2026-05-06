@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yeni Görev Atama - ProBASE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Outfit', sans-serif; background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 30px; }
+
+        .card {
+            background: white;
+            width: 100%;
+            max-width: 640px;
+            border-radius: 28px;
+            box-shadow: 0 20px 60px rgba(37,99,235,0.10);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            padding: 30px 40px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .card-header svg { width: 40px; height: 40px; flex-shrink: 0; }
+        .card-header h1 { font-size: 22px; font-weight: 800; }
+        .card-header p { font-size: 13px; opacity: 0.75; margin-top: 3px; }
+
+        .card-body { padding: 35px 40px; }
+
+        .project-badge {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1d4ed8;
+        }
+
+        .form-group { margin-bottom: 22px; }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Outfit', sans-serif;
+            color: #1e293b;
+            outline: none;
+            transition: 0.2s;
+            background: #f8fafc;
+        }
+        .form-control:focus { border-color: #3b82f6; background: white; box-shadow: 0 0 0 4px rgba(59,130,246,0.1); }
+
+        select.form-control { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+            box-shadow: 0 6px 20px rgba(37,99,235,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(37,99,235,0.4); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 10px 0;
+            border: none;
+            background: none;
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 20px;
+        }
+        .btn-back:hover { color: #2563eb; }
+
+        .success-banner {
+            display: none;
+            background: #ecfdf5;
+            border: 1px solid #6ee7b7;
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: #065f46;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 20px;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+            <div>
+                <h1>Yeni Görev Atama</h1>
+                <p>Personele yeni görev oluşturun ve bildirim gönderin</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <button class="btn-back" onclick="history.back()">← Geri Dön</button>
+
+            <div class="project-badge">
+                📋 <span id="projectBadge">Proje yükleniyor...</span>
+            </div>
+
+            <div class="success-banner" id="successBanner">
+                ✅ Görev başarıyla oluşturuldu! Personele bildirim gönderildi.
+            </div>
+
+            <form id="taskForm">
+                <div class="form-group">
+                    <label>Görev Başlığı</label>
+                    <input type="text" id="baslik" class="form-control" required placeholder="Örn: API Entegrasyonu Tamamla">
+                </div>
+
+                <div class="form-group">
+                    <label>Sorumlu Personel</label>
+                    <select id="sorumlu" class="form-control" required>
+                        <option value="">Personel seçiniz...</option>
+                    </select>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Departman</label>
+                        <select id="departman" class="form-control">
+                            <option value="Genel">Genel</option>
+                            <option value="Tasarım">Tasarım</option>
+                            <option value="Backend">Backend</option>
+                            <option value="Frontend">Frontend</option>
+                            <option value="Veritabanı">Veritabanı</option>
+                            <option value="Proje Yönetimi">Proje Yönetimi</option>
+                            <option value="Mobil Uygulama">Mobil Uygulama</option>
+                            <option value="Siber Güvenlik">Siber Güvenlik</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Son Tarih</label>
+                        <input type="date" id="deadline" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Görev Açıklaması</label>
+                    <textarea id="detay" class="form-control" style="height:110px; resize:vertical;" placeholder="Görev hakkında detaylı açıklama yazın..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span>🚀 Görevi Ata ve Bildirim Gönder</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+        const aktifProje = JSON.parse(localStorage.getItem('aktifProje') || '{}');
+        const projectId = aktifProje.id || 1;
+        const projectName = aktifProje.ad || 'Proje';
+
+        document.getElementById('projectBadge').textContent = `Proje: ${projectName}`;
+
+        // Dinamik personel listesini yükle
+        async function loadPersonnel() {
+            try {
+                const r = await fetch(`${API_BASE}/api/personnel`);
+                const users = await r.json();
+                const select = document.getElementById('sorumlu');
+                // Sadece personel rolündeki kullanıcıları göster
+                users.filter(u => u.rol === 'personel' || u.rol === 'admin').forEach(u => {
+                    const opt = document.createElement('option');
+                    opt.value = u.kullaniciAdi;
+                    opt.textContent = `${u.kullaniciAdi} (${u.departman || '—'})`;
+                    select.appendChild(opt);
+                });
+            } catch(e) {
+                console.error('Personel yüklenemedi:', e);
+            }
+        }
+
+        // Personel seçildiğinde departmanı otomatik doldur
+        document.getElementById('sorumlu').addEventListener('change', async function() {
+            const name = this.value;
+            if(!name) return;
+            try {
+                const r = await fetch(`${API_BASE}/api/personnel`);
+                const users = await r.json();
+                const user = users.find(u => u.kullaniciAdi === name);
+                if(user && user.departman) {
+                    const deptSelect = document.getElementById('departman');
+                    for(let opt of deptSelect.options) {
+                        if(opt.value === user.departman) { deptSelect.value = user.departman; break; }
+                    }
+                }
+            } catch(e) {}
+        });
+
+        document.getElementById('taskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span>Kaydediliyor...</span>';
+
+            const payload = {
+                baslik: document.getElementById('baslik').value,
+                sorumlu_kisi: document.getElementById('sorumlu').value,
+                departman: document.getElementById('departman').value,
+                deadline: document.getElementById('deadline').value,
+                detay: document.getElementById('detay').value,
+                project_id: projectId
+            };
+
+            try {
+                const r = await fetch(`${API_BASE}/api/tasks`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (r.ok) {
+                    document.getElementById('successBanner').style.display = 'flex';
+                    document.getElementById('taskForm').reset();
+                    document.getElementById('projectBadge').textContent = `Proje: ${projectName}`;
+                    setTimeout(() => { window.location.href = 'proje-detay.html'; }, 1800);
+                } else {
+                    const err = await r.json();
+                    alert('Hata: ' + (err.error || 'Bilinmeyen hata'));
+                }
+            } catch(err) {
+                alert('Sunucuya ulaşılamadı. Backend sunucusunun çalıştığından emin olun.');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<span>🚀 Görevi Ata ve Bildirim Gönder</span>';
+        });
+
+        loadPersonnel();
+    </script>
+</body>
+</html>
